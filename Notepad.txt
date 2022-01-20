@@ -1,0 +1,142 @@
+ #************************************************* Notepad*********************************************************
+#***********************************************This is Mini poject ************************************************
+#***********************************************Made By Arun Kumar************************************************** 
+
+
+
+
+
+
+#************************************** Import modules*************************************************************
+from tkinter import *
+from tkinter.messagebox import showinfo
+import os 
+from tkinter.filedialog import askopenfilename ,asksaveasfile, asksaveasfilename
+        
+#**************************************Create notepad Window******************************************************
+
+root=Tk()
+root.title("My Notepade")
+text_area=Text(root,font="lucida 13")
+text_area.pack(expand=True ,fill=BOTH)
+root.geometry("800x600")
+
+
+
+#*************************************This is Command Functions****************************************************
+
+def new_page():
+    global file
+    root.title("My Notepad")
+    file = None
+    text_area.delete(1.0,END)
+
+
+def _open():
+    global file 
+    file = askopenfilename( defaultextension =".text",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
+    if file== "":
+        file = None
+    else :
+        root.title(os.path.basename(file) + "- Notepad")
+        text_area.delete(1.0,END)
+        f= open(file,"r")
+        text_area.insert(1.0,f.read())
+        f.close()
+
+     
+def _save():
+
+    global file 
+    file = None
+    if file ==None:
+        file = asksaveasfilename(initialfile="Untitled.txt" ,defaultextension=".text",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
+        if file=="":
+
+            file=None
+        else:
+            f= open(file,"w")
+            f.write(text_area.get(1.0,END))
+            f.close()
+            root.title(os.path.basename(file) + "- Notepad")
+            print("File sves")
+    else:
+
+        f= open(file,"w")
+        f.write(text_area.get(1.0,END))
+        f.close()
+
+
+
+#***************************************Edit Function**************************************************************
+
+def past():
+    text_area.event_generate("<<Paste>>")
+def cut():
+    text_area.event_generate("<<Cut>>")
+
+def copy():
+    text_area.event_generate("<<Copy>>")
+
+def _about():
+    showinfo("Notepade","This is Notepad which is mode by Arun Kumar")
+
+def _quit():
+    root.destroy()
+
+
+
+
+
+ 
+#*********************************filebar start*****************************************************************
+
+
+menubar = Menu(root)
+filebar = Menu(menubar,tearoff=0)
+
+filebar.add_command(label="New",command=new_page)
+filebar.add_command(label="Open",command=_open)
+filebar.add_command(label="Save",command=_save)
+filebar.add_separator()
+filebar.add_command(label="Exit",command=_quit)
+
+menubar.add_cascade(label="File",menu=filebar)
+
+
+#********************************Edit Start**********************************************************************
+
+editbar = Menu(menubar,tearoff=0)
+
+editbar.add_command(label="Cut",command=cut)
+editbar.add_command(label="Copy",command=copy)
+editbar.add_command(label="Past",command=past)
+
+menubar.add_cascade(label="Edit",menu=editbar)
+
+
+#********************************Helpbar start*********************************************************************
+
+
+helpbar = Menu(menubar,tearoff=0)
+helpbar.add_command(label="About us",command=_about)
+
+menubar.add_cascade(label="Help",menu=helpbar)
+
+
+root.config(menu=menubar)
+
+
+#********************************Create a Scrollbar*************************************************************
+
+"""scroll = Scrollbar(text_area)
+scroll.pack(side=RIGHT,fill=Y)
+scroll.config(command=text_area.yview)
+scroll.config(yscrollcommand=scroll.set)"""
+
+
+
+
+root.mainloop()
+
+
